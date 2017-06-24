@@ -52,7 +52,7 @@ public class CSVHotelFileWriter {
 				hotelDataRecord.add(String.valueOf(hotel.getDayDiff()));
 				hotelDataRecord.add(hotel.getWeekDay());
 				hotelDataRecord.add(String.valueOf(hotel.getDiscountDiff()));
-				hotelDataRecord.add(String.valueOf(hotel.getDiscountPerc()));
+				hotelDataRecord.add(String.valueOf(hotel.getDiscountPerc()) + "%");
 				csvFilePrinter.printRecord(hotelDataRecord);
 			}
 
