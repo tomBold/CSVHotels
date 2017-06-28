@@ -15,8 +15,8 @@ public class CSVHotelFileWriter {
 
 	// CSV file header
 	private static final String[] FILE_HEADER = { "Snapshot ID", "Snapshot Date", "Checkin Date", "Days",
-			"Original Price", "Discount Price", "Discount Code", "Available Rooms", "Hotel Name", "Hotel Stars",
-			"DayDiff", "WeekDay", "DiscountDiff", "DiscountPerc" };
+			"Original Price", "Discount Price", "Available Rooms", "Hotel Name", "Hotel Stars", "DayDiff", "WeekDay",
+			"DiscountDiff", "DiscountPerc", "Discount Code" };
 
 	public static void writeCsvFile(String fileName, List<Hotel> hotels) {
 		FileWriter fileWriter = null;
@@ -45,14 +45,15 @@ public class CSVHotelFileWriter {
 				hotelDataRecord.add(String.valueOf(hotel.getDays()));
 				hotelDataRecord.add(String.valueOf(hotel.getOriginalPrice()));
 				hotelDataRecord.add(String.valueOf(hotel.getDiscountPrice()));
-				hotelDataRecord.add(String.valueOf(hotel.getDiscountCode()));
 				hotelDataRecord.add(String.valueOf(hotel.getAvailableRooms()));
+//				hotelDataRecord.add("'" + hotel.getHotelName() + "'");
 				hotelDataRecord.add(hotel.getHotelName());
 				hotelDataRecord.add(String.valueOf(hotel.getHotelStars()));
 				hotelDataRecord.add(String.valueOf(hotel.getDayDiff()));
 				hotelDataRecord.add(hotel.getWeekDay());
 				hotelDataRecord.add(String.valueOf(hotel.getDiscountDiff()));
-				hotelDataRecord.add(String.valueOf(hotel.getDiscountPerc()) + "%");
+				hotelDataRecord.add(String.valueOf(hotel.getDiscountPerc()));
+				hotelDataRecord.add(String.valueOf(hotel.getDiscountCode()));
 				csvFilePrinter.printRecord(hotelDataRecord);
 			}
 

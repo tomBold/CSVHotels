@@ -23,7 +23,8 @@ public class Hotel {
 		HotelName = hotelName;
 		HotelStars = hotelStars;
 
-		SimpleDateFormat fromUser = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+		SimpleDateFormat fromUser = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		SimpleDateFormat saveFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 		SimpleDateFormat myFormat = new SimpleDateFormat("yyyy/MM/dd");
 
 		try {
@@ -33,6 +34,12 @@ public class Hotel {
 
 			String reformattedCheckinDateStr = myFormat.format(fromUser.parse(CheckinDateStr));
 			CheckinDate = new Date(reformattedCheckinDateStr);
+			
+			SnapshotDateStr = '"' + saveFormat.format(fromUser.parse(SnapshotDateStr)) + ":00" + '"';
+
+			CheckinDateStr = '"' + saveFormat.format(fromUser.parse(CheckinDateStr)) + ":00" + '"';
+
+			
 
 		} catch (ParseException e) {
 			e.printStackTrace();
