@@ -113,7 +113,7 @@ public class CSVHotelFileWriter {
 			String key = entry.getKey();
 			
 			
-			List<Hotel> value = entry.getValue();
+			List<Hotel> value = getHotelFor32(entry.getValue());
 
 			if (i < max) {
 				i++;
@@ -164,6 +164,38 @@ public class CSVHotelFileWriter {
 	public static List<Hotel> getHotelFor32(List<Hotel> hotels)
 	{
 		List<Hotel> result = new ArrayList<>();
+		
+		HashMap<String, List<Hotel>> checkinDateToRecoredMap = new HashMap<String, List<Hotel>>();
+
+		for (Hotel hotel : hotels) {
+			if (!checkinDateToRecoredMap.containsKey(hotel.getCheckinDateStr())) {
+				checkinDateToRecoredMap.put(hotel.getCheckinDateStr(), new ArrayList<>());
+			}
+
+			checkinDateToRecoredMap.get(hotel.getCheckinDateStr()).add(hotel);
+		}
+
+
+		Map<String, List<Hotel>> list = sortByListSizeValue(checkinDateToRecoredMap);
+
+		int i = 0;
+		int max = 40;
+
+		for (Map.Entry<String, List<Hotel>> entry : list.entrySet()) {
+			String key = entry.getKey();
+			
+			
+			// TODO:/ Get the value by 3.3
+			List<Hotel> value = entry.getValue();
+
+			if (i < max) {
+				i++;
+
+				result.addAll(value);
+			} else {
+				return result;
+			}
+		}
 		
 		return result;
 	}
