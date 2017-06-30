@@ -8,7 +8,10 @@ public class main {
 
 		List<Hotel> hotels = CSVHotelFileReader.readCsvFile("hotels1.csv");
 		//	CSVHotelFileWriter.writeCsvFile("Hotels_data_Changed.csv", hotels);
-		CSVHotelFileWriter.do31(hotels);
+		List<Hotel> hotels31  = CSVHotelFileWriter.do31(hotels);
+		List<Hotel> hotels32 = CSVHotelFileWriter.do32(hotels31);
+		CSVHotelFileWriter.writeCsvFile("Hotels_data_Changed3.csv", hotels32);
+		
 
 		System.exit(0);
 	}
