@@ -90,6 +90,11 @@ public class CSVHotelFileWriter {
 		List<Hotel> hotels32 = getHotelsFor32(hotels);
 		return hotels32;
 	}
+	
+	public static void do33(HashMap<String, List<Hotel>> checkinDateToHotels)
+	{
+		
+	}
 
 	public static List<Hotel> getHotelsFor31(List<Hotel> hotels) {
 		HashMap<String, List<Hotel>> hotelNameToRecoredMap = new HashMap<String, List<Hotel>>();
@@ -177,6 +182,9 @@ public class CSVHotelFileWriter {
 		int i = 0;
 		int max = 40;
 
+		HashMap<String, List<Hotel>> mapFor33 = new HashMap<>();
+		
+		
 		for (Map.Entry<String, List<Hotel>> entry : list.entrySet()) {
 			String key = entry.getKey();
 			List<Hotel> value = entry.getValue();
@@ -185,10 +193,14 @@ public class CSVHotelFileWriter {
 				i++;
 
 				result.addAll(value);
+				mapFor33.put(key, value);
+				
 			} else {
 				return result;
 			}
 		}
+		
+		do33(mapFor33);
 
 		return null;
 
