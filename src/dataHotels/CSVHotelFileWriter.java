@@ -126,7 +126,48 @@ public class CSVHotelFileWriter {
 		}
 
 		return null;
+	}
+	
+	public static List<Hotel> getHotelsByFor32(List<Hotel> hotels) {
+		HashMap<String, List<Hotel>> hotelCheckInToRecoredMap = new HashMap<String, List<Hotel>>();
 
+		for (Hotel hotel : hotels) {
+			if (!hotelCheckInToRecoredMap.containsKey(hotel.getCheckinDateStr())) {
+				hotelCheckInToRecoredMap.put(hotel.getCheckinDateStr(), new ArrayList<>());
+			}
+
+			hotelCheckInToRecoredMap.get(hotel.getCheckinDateStr()).add(hotel);
+		}
+
+		List<Hotel> result = new ArrayList<>();
+
+		Map<String, List<Hotel>> list = sortByListSizeValue(hotelCheckInToRecoredMap);
+		List<String> checkInDates = new ArrayList<>();
+
+		int i = 0;
+		int max = 40;
+
+		for (Map.Entry<String, List<Hotel>> entry : list.entrySet()) {
+			String key = entry.getKey();
+
+			List<Hotel> value = entry.getValue();
+
+			if (i < max) {
+				i++;
+				checkInDates.add(key);
+
+				result.addAll(value);
+			} else {
+				
+				// if you need just the dates
+				//return checkInDates;
+				
+				
+				return result;
+			}
+		}
+
+		return null;
 	}
 
 	private static Map<String, List<Hotel>> sortByListSizeValue(Map<String, List<Hotel>> unsortMap) {
@@ -139,7 +180,7 @@ public class CSVHotelFileWriter {
 		// Try switch the o1 o2 position for a different order
 		Collections.sort(list, new Comparator<Map.Entry<String, List<Hotel>>>() {
 			public int compare(Map.Entry<String, List<Hotel>> o1, Map.Entry<String, List<Hotel>> o2) {
-				if (o1.getValue().size() > o2.getValue().size())
+				if (o1.getValue().size() >= o2.getValue().size())
 					return -1;
 				else
 					return 1;
@@ -161,7 +202,9 @@ public class CSVHotelFileWriter {
 
 		return sortedMap;
 	}
-	
+
+	/*
+
 	public static List<Hotel> getHotelFor32(List<Hotel> hotels)
 	{
 		List<Hotel> result = new ArrayList<>();
@@ -189,7 +232,7 @@ public class CSVHotelFileWriter {
 			// TODO:/ Get the value by 3.3
 			List<Hotel> value = entry.getValue();
 
-			if (i < max) {
+			if (i < max && i <list.size()) {
 				i++;
 
 				result.addAll(value);
@@ -200,6 +243,7 @@ public class CSVHotelFileWriter {
 		
 		return result;
 	}
+	*/
 	
 	public static List<Hotel> getHotelsFor33(List<Hotel> hotels)
 	{
