@@ -199,5 +199,12 @@ public class CSVHotelFileWriter {
 		
 		return result;
 	}
+	
+	public static List<Hotel> getHotelFor33(List<Hotel> hotels)
+	{
+		List<Hotel> result = new ArrayList<>();
+		
+		return result;
+	}
 
 }
