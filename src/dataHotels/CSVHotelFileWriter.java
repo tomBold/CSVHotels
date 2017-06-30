@@ -104,7 +104,7 @@ public class CSVHotelFileWriter {
 
 		List<Hotel> result = new ArrayList<>();
 
-		Map<String, List<Hotel>> list = sortByValue(hotelNameToRecoredMap);
+		Map<String, List<Hotel>> list = sortByListSizeValue(hotelNameToRecoredMap);
 
 		int i = 0;
 		int max = 150;
@@ -126,7 +126,7 @@ public class CSVHotelFileWriter {
 
 	}
 
-	private static Map<String, List<Hotel>> sortByValue(Map<String, List<Hotel>> unsortMap) {
+	private static Map<String, List<Hotel>> sortByListSizeValue(Map<String, List<Hotel>> unsortMap) {
 
 		// 1. Convert Map to List of Map
 		List<Map.Entry<String, List<Hotel>>> list = new LinkedList<Map.Entry<String, List<Hotel>>>(
@@ -172,7 +172,7 @@ public class CSVHotelFileWriter {
 
 		List<Hotel> result = new ArrayList<>();
 
-		Map<String, List<Hotel>> list = sortByValue(checkinToRecoredMap);
+		Map<String, List<Hotel>> list = sortByListSizeValue(checkinToRecoredMap);
 
 		int i = 0;
 		int max = 40;
