@@ -3,7 +3,13 @@ package dataHotels;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -46,7 +52,7 @@ public class CSVHotelFileWriter {
 				hotelDataRecord.add(String.valueOf(hotel.getOriginalPrice()));
 				hotelDataRecord.add(String.valueOf(hotel.getDiscountPrice()));
 				hotelDataRecord.add(String.valueOf(hotel.getAvailableRooms()));
-//				hotelDataRecord.add("'" + hotel.getHotelName() + "'");
+				// hotelDataRecord.add("'" + hotel.getHotelName() + "'");
 				hotelDataRecord.add(hotel.getHotelName());
 				hotelDataRecord.add(String.valueOf(hotel.getHotelStars()));
 				hotelDataRecord.add(String.valueOf(hotel.getDayDiff()));
@@ -72,5 +78,82 @@ public class CSVHotelFileWriter {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public static void do31(List<Hotel> hotels)
+	{
+		List<Hotel> hotels31 = getHotelsFor31(hotels);
+		writeCsvFile("Hotels_data_Changed31.csv", hotels31);
+	}
+
+	public static List<Hotel> getHotelsFor31(List<Hotel> hotels) {
+		HashMap<String, List<Hotel>> hotelNameToRecoredMap = new HashMap<String, List<Hotel>>();
+
+		for (Hotel hotel : hotels) {
+			if (!hotelNameToRecoredMap.containsKey(hotel.getHotelName())) {
+				hotelNameToRecoredMap.put(hotel.getHotelName(), new ArrayList<>());
+			}
+
+			hotelNameToRecoredMap.get(hotel.getHotelName()).add(hotel);
+		}
+
+		List<Hotel> result = new ArrayList<>();
+
+		Map<String, List<Hotel>> list = sortByValue(hotelNameToRecoredMap);
+
+		int i = 0;
+		int max = 150;
+
+		for (Map.Entry<String, List<Hotel>> entry : list.entrySet()) {
+			String key = entry.getKey();
+			List<Hotel> value = entry.getValue();
+			
+			if (i < max)
+			{
+				i++;
+				
+				result.addAll(value);
+			}
+			else
+			{
+				return result;
+			}
+		}
+		
+		return null;
+
+	}
+
+	private static Map<String, List<Hotel>> sortByValue(Map<String, List<Hotel>> unsortMap) {
+
+		// 1. Convert Map to List of Map
+		List<Map.Entry<String, List<Hotel>>> list = new LinkedList<Map.Entry<String, List<Hotel>>>(
+				unsortMap.entrySet());
+
+		// 2. Sort list with Collections.sort(), provide a custom Comparator
+		// Try switch the o1 o2 position for a different order
+		Collections.sort(list, new Comparator<Map.Entry<String, List<Hotel>>>() {
+			public int compare(Map.Entry<String, List<Hotel>> o1, Map.Entry<String, List<Hotel>> o2) {
+				if( o1.getValue().size() >  o2.getValue().size())
+					return -1;
+				else
+					return 1;
+			}
+		});
+
+		// 3. Loop the sorted list and put it into a new insertion order Map
+		// LinkedHashMap
+		Map<String, List<Hotel>> sortedMap = new LinkedHashMap<String, List<Hotel>>();
+		for (Map.Entry<String, List<Hotel>> entry : list) {
+			sortedMap.put(entry.getKey(), entry.getValue());
+		}
+
+		/*
+		 * //classic iterator example for (Iterator<Map.Entry<String, Integer>>
+		 * it = list.iterator(); it.hasNext(); ) { Map.Entry<String, Integer>
+		 * entry = it.next(); sortedMap.put(entry.getKey(), entry.getValue()); }
+		 */
+
+		return sortedMap;
 	}
 }
