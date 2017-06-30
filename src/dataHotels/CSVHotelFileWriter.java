@@ -86,11 +86,6 @@ public class CSVHotelFileWriter {
 		return hotels31;
 	}
 
-	public static List<Hotel> do32(List<Hotel> hotels) {
-		List<Hotel> hotels32 = getHotelsFor32(hotels);
-		return hotels32;
-	}
-	
 	public static void do33(HashMap<String, List<Hotel>> checkinDateToHotels)
 	{
 		
@@ -116,6 +111,8 @@ public class CSVHotelFileWriter {
 
 		for (Map.Entry<String, List<Hotel>> entry : list.entrySet()) {
 			String key = entry.getKey();
+			
+			
 			List<Hotel> value = entry.getValue();
 
 			if (i < max) {
@@ -163,46 +160,12 @@ public class CSVHotelFileWriter {
 
 		return sortedMap;
 	}
-
-	public static List<Hotel> getHotelsFor32(List<Hotel> hotels) {
-		HashMap<String, List<Hotel>> checkinToRecoredMap = new HashMap<String, List<Hotel>>();
-
-		for (Hotel hotel : hotels) {
-			if (!checkinToRecoredMap.containsKey(hotel.getCheckinDateStr())) {
-				checkinToRecoredMap.put(hotel.getCheckinDateStr(), new ArrayList<>());
-			}
-
-			checkinToRecoredMap.get(hotel.getCheckinDateStr()).add(hotel);
-		}
-
+	
+	public static List<Hotel> getHotelFor32(List<Hotel> hotels)
+	{
 		List<Hotel> result = new ArrayList<>();
-
-		Map<String, List<Hotel>> list = sortByListSizeValue(checkinToRecoredMap);
-
-		int i = 0;
-		int max = 40;
-
-		HashMap<String, List<Hotel>> mapFor33 = new HashMap<>();
 		
-		
-		for (Map.Entry<String, List<Hotel>> entry : list.entrySet()) {
-			String key = entry.getKey();
-			List<Hotel> value = entry.getValue();
-
-			if (i < max) {
-				i++;
-
-				result.addAll(value);
-				mapFor33.put(key, value);
-				
-			} else {
-				return result;
-			}
-		}
-		
-		do33(mapFor33);
-
-		return null;
-
+		return result;
 	}
+
 }
