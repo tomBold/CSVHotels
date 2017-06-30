@@ -113,7 +113,8 @@ public class CSVHotelFileWriter {
 			String key = entry.getKey();
 			
 			
-			List<Hotel> value = getHotelFor32(entry.getValue());
+			//List<Hotel> value = getHotelFor32(entry.getValue());
+			List<Hotel> value = entry.getValue();
 
 			if (i < max) {
 				i++;
@@ -200,7 +201,21 @@ public class CSVHotelFileWriter {
 		return result;
 	}
 	
-	public static List<Hotel> getHotelFor33(List<Hotel> hotels)
+	public static List<Hotel> getHotelsFor33(List<Hotel> hotels)
+	{
+		List<Hotel> result = new ArrayList<>();
+		
+		return result;
+	}
+	
+	public static List<Hotel> getHotelsFor34(List<Hotel> hotels)
+	{
+		List<Hotel> result = new ArrayList<>();
+		
+		return result;
+	}
+	
+	public static List<Hotel> getHotelsFor35(List<Hotel> hotels)
 	{
 		List<Hotel> result = new ArrayList<>();
 		
