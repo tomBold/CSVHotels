@@ -103,22 +103,33 @@ public class CSVHotelFileWriter {
 			{
 				hotelDataHeader.add("x" + i);
 			}
+	//	hotelDataHeader.add("items");
 			
 			csvFilePrinter.printRecord(hotelDataHeader);
 
 			// Create CSV file header
-		 csvFilePrinter.printRecord(FILE_HEADER);
+		// csvFilePrinter.printRecord(FILE_HEADER);
 
 			// Write a new hotel object list to the CSV file
 			for (HotelResult hotel : hotels) {
 				List hotelDataRecord = new ArrayList();
 				hotelDataRecord.add(hotel.getName());
 				
+				String curr = "";
+				int i = 0;
+				
 				for (Integer currPrice : hotel.getNormalPrices())
 				{
+//					curr = curr + String.valueOf(currPrice);
+//					if (i < 159)
+//					{
+//						curr = curr + ",";
+//					}
+//					i++;
 					hotelDataRecord.add(String.valueOf(currPrice));
 				}
-			
+				
+
 				csvFilePrinter.printRecord(hotelDataRecord);
 			}
 
