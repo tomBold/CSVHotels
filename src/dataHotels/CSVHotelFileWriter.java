@@ -95,9 +95,19 @@ public class CSVHotelFileWriter {
 
 			// initialize CSVPrinter object
 			csvFilePrinter = new CSVPrinter(fileWriter, csvFileFormat);
+			
+			List hotelDataHeader = new ArrayList<>();
+			hotelDataHeader.add("Hotel Name");
+			
+			for (int i = 1; i <= 160; i++)
+			{
+				hotelDataHeader.add("x" + i);
+			}
+			
+			csvFilePrinter.printRecord(hotelDataHeader);
 
 			// Create CSV file header
-		//	csvFilePrinter.printRecord(FILE_HEADER);
+		 csvFilePrinter.printRecord(FILE_HEADER);
 
 			// Write a new hotel object list to the CSV file
 			for (HotelResult hotel : hotels) {
