@@ -52,8 +52,8 @@ public class CSVHotelFileWriter {
 				hotelDataRecord.add(String.valueOf(hotel.getOriginalPrice()));
 				hotelDataRecord.add(String.valueOf(hotel.getDiscountPrice()));
 				hotelDataRecord.add(String.valueOf(hotel.getAvailableRooms()));
-				// hotelDataRecord.add("'" + hotel.getHotelName() + "'");
-				hotelDataRecord.add(hotel.getHotelName());
+				hotelDataRecord.add("'" + hotel.getHotelName() + "'");
+				// hotelDataRecord.add(hotel.getHotelName());
 				hotelDataRecord.add(String.valueOf(hotel.getHotelStars()));
 				hotelDataRecord.add(String.valueOf(hotel.getDayDiff()));
 				hotelDataRecord.add(hotel.getWeekDay());
@@ -79,19 +79,117 @@ public class CSVHotelFileWriter {
 			}
 		}
 	}
+	
 
-	public static List<Hotel> do31(List<Hotel> hotels) {
-		List<Hotel> hotels31 = getHotelsFor31(hotels);
+	public static void writeFinish(String fileName, List<HotelResult> hotels) {
+		FileWriter fileWriter = null;
+		CSVPrinter csvFilePrinter = null;
 
-		return hotels31;
+		// Create the CSVFormat object with "\n" as a record delimiter
+		CSVFormat csvFileFormat = CSVFormat.DEFAULT.withRecordSeparator(NEW_LINE_SEPARATOR);
+
+		try {
+
+			// initialize FileWriter object
+			fileWriter = new FileWriter(fileName);
+
+			// initialize CSVPrinter object
+			csvFilePrinter = new CSVPrinter(fileWriter, csvFileFormat);
+
+			// Create CSV file header
+		//	csvFilePrinter.printRecord(FILE_HEADER);
+
+			// Write a new hotel object list to the CSV file
+			for (HotelResult hotel : hotels) {
+				List hotelDataRecord = new ArrayList();
+				hotelDataRecord.add(hotel.getName());
+				
+				for (Integer currPrice : hotel.getNormalPrices())
+				{
+					hotelDataRecord.add(String.valueOf(currPrice));
+				}
+			
+				csvFilePrinter.printRecord(hotelDataRecord);
+			}
+
+			System.out.println("CSV file was created successfully !!!");
+
+		} catch (Exception e) {
+			System.out.println("Error in CsvFileWriter !!!");
+			e.printStackTrace();
+		} finally {
+			try {
+				fileWriter.flush();
+				fileWriter.close();
+				csvFilePrinter.close();
+			} catch (IOException e) {
+				System.out.println("Error while flushing/closing fileWriter/csvPrinter !!!");
+				e.printStackTrace();
+			}
+		}
 	}
 
-	public static void do33(HashMap<String, List<Hotel>> checkinDateToHotels)
-	{
+	public static void do31(String fileName, List<Hotel> hotels) {
+		List<HotelResult> result = getHotelsFor31(hotels);
 		
+		writeFinish(fileName, result);
 	}
 
-	public static List<Hotel> getHotelsFor31(List<Hotel> hotels) {
+
+	public static List<HotelDates> getHotelDates(Map<String, List<Hotel>> nameToRecored, List<String> dates) {
+		List<HotelDates> result = new ArrayList<>();
+
+		for (Map.Entry<String, List<Hotel>> entry : nameToRecored.entrySet()) {
+			String key = entry.getKey();
+
+			List<Hotel> value = entry.getValue();
+			HotelDates hotelDate = new HotelDates(dates, key);
+
+			for (CheckinDatePrices datePrice : hotelDate.getCheckinDates()) {
+				Hotel code1 = getHotelForDateAndCode(datePrice.getCheckinDate(), 1, value);
+				if (code1 != null) {
+					datePrice.setPrice1(code1.getDiscountPrice());
+				}
+
+				Hotel code2 = getHotelForDateAndCode(datePrice.getCheckinDate(), 2, value);
+				if (code2 != null) {
+					datePrice.setPrice2(code2.getDiscountPrice());
+				}
+
+				Hotel code3 = getHotelForDateAndCode(datePrice.getCheckinDate(), 3, value);
+				if (code3 != null) {
+					datePrice.setPrice3(code3.getDiscountPrice());
+				}
+
+				Hotel code4 = getHotelForDateAndCode(datePrice.getCheckinDate(), 4, value);
+				if (code4 != null) {
+					datePrice.setPrice4(code4.getDiscountPrice());
+				}
+			}
+
+			result.add(hotelDate);
+		}
+
+		return result;
+	}
+
+	public static Hotel getHotelForDateAndCode(String date, int code, List<Hotel> hotelData) {
+		Hotel minPrice = null;
+
+		for (Hotel hotel : hotelData) {
+			if (hotel.getCheckinDateStr().equals(date) && hotel.getDiscountCode() == code) {
+				if (minPrice == null) {
+					minPrice = hotel;
+				} else if (minPrice.getDiscountPrice() < hotel.getDiscountPrice()) {
+					minPrice = hotel;
+				}
+			}
+		}
+
+		return minPrice;
+	}
+
+	public static List<HotelResult> getHotelsFor31(List<Hotel> hotels) {
 		HashMap<String, List<Hotel>> hotelNameToRecoredMap = new HashMap<String, List<Hotel>>();
 
 		for (Hotel hotel : hotels) {
@@ -109,26 +207,47 @@ public class CSVHotelFileWriter {
 		int i = 0;
 		int max = 150;
 
+		Map<String, List<Hotel>> resultMap = new HashMap<String, List<Hotel>>();
+
 		for (Map.Entry<String, List<Hotel>> entry : list.entrySet()) {
 			String key = entry.getKey();
-			
-			
-			//List<Hotel> value = getHotelFor32(entry.getValue());
+
+			// List<Hotel> value = getHotelFor32(entry.getValue());
 			List<Hotel> value = entry.getValue();
 
 			if (i < max) {
 				i++;
 
+				resultMap.put(key, value);
 				result.addAll(value);
+
 			} else {
-				return result;
+
+				continue;
 			}
 		}
 
-		return null;
+		List<String> dates = getHotelsByFor32(result);
+
+		List<HotelDates> hotelDates = getHotelDates(resultMap, dates);
+		
+		 List<HotelResult> finish = do34(hotelDates);
+
+		return finish;
 	}
-	
-	public static List<Hotel> getHotelsByFor32(List<Hotel> hotels) {
+
+	public static List<HotelResult> do34(List<HotelDates> data) {
+		List<HotelResult> result = new ArrayList<>();
+		
+		for (HotelDates hotelDates : data) {
+			HotelResult cuurr = new HotelResult(hotelDates.getHotelName(), hotelDates);
+			result.add(cuurr);
+		}
+
+		return result;
+	}
+
+	public static List<String> getHotelsByFor32(List<Hotel> hotels) {
 		HashMap<String, List<Hotel>> hotelCheckInToRecoredMap = new HashMap<String, List<Hotel>>();
 
 		for (Hotel hotel : hotels) {
@@ -158,12 +277,11 @@ public class CSVHotelFileWriter {
 
 				result.addAll(value);
 			} else {
-				
+
 				// if you need just the dates
-				//return checkInDates;
-				
-				
-				return result;
+				return checkInDates;
+
+				// return result;
 			}
 		}
 
@@ -204,66 +322,37 @@ public class CSVHotelFileWriter {
 	}
 
 	/*
-
-	public static List<Hotel> getHotelFor32(List<Hotel> hotels)
-	{
-		List<Hotel> result = new ArrayList<>();
-		
-		HashMap<String, List<Hotel>> checkinDateToRecoredMap = new HashMap<String, List<Hotel>>();
-
-		for (Hotel hotel : hotels) {
-			if (!checkinDateToRecoredMap.containsKey(hotel.getCheckinDateStr())) {
-				checkinDateToRecoredMap.put(hotel.getCheckinDateStr(), new ArrayList<>());
-			}
-
-			checkinDateToRecoredMap.get(hotel.getCheckinDateStr()).add(hotel);
-		}
-
-
-		Map<String, List<Hotel>> list = sortByListSizeValue(checkinDateToRecoredMap);
-
-		int i = 0;
-		int max = 40;
-
-		for (Map.Entry<String, List<Hotel>> entry : list.entrySet()) {
-			String key = entry.getKey();
-			
-			
-			// TODO:/ Get the value by 3.3
-			List<Hotel> value = entry.getValue();
-
-			if (i < max && i <list.size()) {
-				i++;
-
-				result.addAll(value);
-			} else {
-				return result;
-			}
-		}
-		
-		return result;
-	}
-	*/
-	
-	public static List<Hotel> getHotelsFor33(List<Hotel> hotels)
-	{
-		List<Hotel> result = new ArrayList<>();
-		
-		return result;
-	}
-	
-	public static List<Hotel> getHotelsFor34(List<Hotel> hotels)
-	{
-		List<Hotel> result = new ArrayList<>();
-		
-		return result;
-	}
-	
-	public static List<Hotel> getHotelsFor35(List<Hotel> hotels)
-	{
-		List<Hotel> result = new ArrayList<>();
-		
-		return result;
-	}
+	 * 
+	 * public static List<Hotel> getHotelFor32(List<Hotel> hotels) { List<Hotel>
+	 * result = new ArrayList<>();
+	 * 
+	 * HashMap<String, List<Hotel>> checkinDateToRecoredMap = new
+	 * HashMap<String, List<Hotel>>();
+	 * 
+	 * for (Hotel hotel : hotels) { if
+	 * (!checkinDateToRecoredMap.containsKey(hotel.getCheckinDateStr())) {
+	 * checkinDateToRecoredMap.put(hotel.getCheckinDateStr(), new
+	 * ArrayList<>()); }
+	 * 
+	 * checkinDateToRecoredMap.get(hotel.getCheckinDateStr()).add(hotel); }
+	 * 
+	 * 
+	 * Map<String, List<Hotel>> list =
+	 * sortByListSizeValue(checkinDateToRecoredMap);
+	 * 
+	 * int i = 0; int max = 40;
+	 * 
+	 * for (Map.Entry<String, List<Hotel>> entry : list.entrySet()) { String key
+	 * = entry.getKey();
+	 * 
+	 * 
+	 * // TODO:/ Get the value by 3.3 List<Hotel> value = entry.getValue();
+	 * 
+	 * if (i < max && i <list.size()) { i++;
+	 * 
+	 * result.addAll(value); } else { return result; } }
+	 * 
+	 * return result; }
+	 */
 
 }
